@@ -274,6 +274,8 @@ ${resources.slice(0, 50).map((r, i) => `${i + 1}. ${r.name}`).join('\n')}
   const nums = (res.choices[0].message.content || '').match(/\d+/g) || [];
   return nums.map(n => resources[parseInt(n) - 1]?.file_path).filter(Boolean);
 }
+
+export async function reviewCoverImage(
   imagePath: string,
   elements: Array<{type: string, content?: string, constraints: string}>,
 ): Promise<{ ok: boolean; feedback: string }> {

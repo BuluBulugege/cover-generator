@@ -34,7 +34,7 @@ export default function TemplatesPage() {
     const fd = new FormData();
     fd.append('name', form.name); fd.append('image', file);
     await fetch('/api/templates', { method: 'POST', body: fd });
-    setUploading(false); setShowUpload(false); setForm({ name: '', platform: 'bilibili' });
+    setUploading(false); setShowUpload(false); setForm({ name: '' });
     load();
   };
 
