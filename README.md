@@ -1,120 +1,76 @@
 [中文](./README.zh.md) | **English**
 
+<div align="center">
+
+<img src="public/logo-text.png" width="400" />
+
 # Cover Generator
 
-<p align="center">
-  <img src="public/logo.png" width="120" alt="Cover Generator" />
-</p>
+**YOUR VIDEO DESERVES A BETTER COVER**
 
-<p align="center">
-  AI-powered video thumbnail batch generator — from raw video to polished covers, fully automated.
-</p>
+[![Build](https://img.shields.io/badge/build-passing-brightgreen)]()
+[![Next.js](https://img.shields.io/badge/Next.js-16-black)]()
+[![AI](https://img.shields.io/badge/AI-Gemini-blue)]()
+[![License](https://img.shields.io/badge/license-MIT-green)]()
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Next.js-15-black?logo=next.js" />
-  <img src="https://img.shields.io/badge/TypeScript-5-blue?logo=typescript" />
-  <img src="https://img.shields.io/badge/SQLite-WAL-green?logo=sqlite" />
-  <img src="https://img.shields.io/badge/License-MIT-yellow" />
-</p>
+[Features](#-features) · [How It Works](#-how-it-works) · [Quick Start](#-quick-start) · [中文](./README.zh.md)
+
+</div>
 
 ---
 
-## What it does
+**Cover Generator** is an *AI-powered thumbnail generation tool* for video creators. Upload your video — the AI transcribes it, writes a viral title, and generates a polished cover image in minutes. No design skills required.
 
-Drop in a video file (or paste a script), pick your templates, and get production-ready thumbnails — in parallel, with AI quality review and auto-correction built in.
+## ✨ Features
 
-<p align="center">
-  <img src="public/illus-pipeline.en.png" width="600" alt="Pipeline" />
-</p>
+- **Video-to-cover automation** — Upload a video; Whisper transcribes it, AI writes the title, cover is generated end-to-end.
+- **Self-correcting AI review loop** — Generated covers are auto-reviewed and regenerated up to 3 times until they pass quality checks.
+- **Template learning** — Upload a reference cover once; the AI learns your style and reuses it forever.
+- **Smart asset library** — Store logos, characters, and backgrounds; AI picks the best match for each video automatically.
+- **Parallel batch generation** — Run up to 5 templates simultaneously and pick your favorite.
+- **Multi-ratio support** — Output in 16:9, 4:3, 1:1, 9:16, and more — ready for any platform.
 
-## Pipeline
+## 🖼 How It Works
 
-```
-Video / Script / Title
-        │
-        ▼
-  [Whisper] Transcribe audio
-        │
-        ▼
-  [gemini-flash] Generate viral title
-        │
-        ├── Template A ──┐
-        ├── Template B ──┤  up to 5 parallel
-        ├── Template C ──┘
-        │
-        ▼
-  Phase 1 · Element adaptation   (titles, image prompts, backgrounds)
-  Phase 2 · Image generation     (gemini-image-pro)
-  Phase 3 · Quality review       (auto-retry up to 3×)
-        │
-        ▼
-  ✓ Final covers
-```
+<div align="center">
+<img src="public/illus-pipeline.en.png" width="600" />
+</div>
 
-## Features
+Upload your video. Whisper extracts and transcribes the audio. The AI analyzes the transcript, generates a punchy title, then produces a cover image — all in one automated pipeline.
 
-| | |
-|---|---|
-| **Multi-template batch** | Up to 5 templates rendered in parallel |
-| **Video → script** | Auto audio extraction + Whisper transcription |
-| **Viral title generation** | Platform-aware (Bilibili / YouTube) |
-| **Two-phase generation** | Element adaptation first → consistent style |
-| **Style transfer** | Reference image or text description |
-| **Self-healing quality loop** | AI reviewer auto-retries with feedback (max 3×) |
-| **Asset library** | Characters / logos auto-injected into covers |
-| **Real-time progress** | Live log streaming per template |
+<div align="center">
+<img src="public/illus-batch.en.png" width="600" />
+</div>
 
-<p align="center">
-  <img src="public/illus-batch.en.png" width="600" alt="Batch generation" />
-</p>
+Select multiple templates and generate up to 5 covers in parallel. Compare results side-by-side and publish the one that fits best.
 
-## Quick Start
+<div align="center">
+<img src="public/illus-review.en.png" width="600" />
+</div>
+
+Every cover goes through an AI review pass. If it doesn't meet the quality bar, the system automatically retries with feedback — up to 3 times — before surfacing the result.
+
+## 🚀 Quick Start
 
 ```bash
 npm install
-cp .env.example .env.local
+cp .env.example .env.local   # fill in AI_BASE_URL and AI_API_KEY
 mkdir -p public/uploads/{templates,covers,frames}
 npm run dev
 ```
 
-Open http://localhost:3000
+Open [http://localhost:3000](http://localhost:3000).
 
-## Configuration
-
-```env
-AI_BASE_URL=https://your-openai-compatible-api/v1
-AI_API_KEY=your-key
-ANALYSIS_MODEL=gemini-3-flash-preview
-IMAGE_GEN_MODEL=gemini-3-pro-image-preview
-```
-
-## Usage
-
-```
-① Templates  →  upload template images  →  AI analyzes element structure
-② Resources  →  upload character/logo assets  →  organize by category
-③ Generate:
-     Step 1  paste script or upload video + choose output ratio
-     Step 2  select templates (multi-select)
-     Step 3  choose resource categories + generation options
-     Step 4  optional style reference image or description
-     → Start → watch live progress → download covers
-```
-
-<p align="center">
-  <img src="public/illus-review.en.png" width="600" alt="Quality review" />
-</p>
-
-## Tech Stack
+## 🛠 Tech Stack
 
 | Layer | Technology |
 |---|---|
-| Framework | Next.js 15 + TypeScript + React 19 |
+| Framework | Next.js 16 + TypeScript + React 19 |
 | Styling | Tailwind CSS 4 |
 | Database | SQLite (better-sqlite3, WAL mode) |
-| AI API | OpenAI-compatible |
+| AI Models | Gemini flash + pro-image (OpenAI-compatible API) |
 | Transcription | Whisper |
-| Video | ffmpeg |
+| Video processing | ffmpeg |
 
 ## License
 
