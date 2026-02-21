@@ -46,3 +46,6 @@ data.db
 data.db-shm
 data.db-wal
 public/uploads/
+
+# local docs (not for public repo)
+docs/product-report.md
