@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "skills": {
+    "launch-strategy": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "c7254a1e9288c1adb6897c0c8ef0b0f82759894fe21c7971f9d5b62362f416d5"
+    },
+    "social-growth-engineer": {
+      "source": "giulioco/skills",
+      "sourceType": "github",
+      "computedHash": "1f09f1133cd3da57c7baf66d34f8fb346f7e9bb902d83e46b204b6ea3208d652"
+    }
+  }
+}
