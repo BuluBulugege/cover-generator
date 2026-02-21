@@ -1,65 +1,98 @@
-import Image from "next/image";
+'use client';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
-export default function Home() {
+export default function Dashboard() {
+  const [stats, setStats] = useState({ templates: 0, resources: 0, projects: 0 });
+  const [projects, setProjects] = useState<Array<Record<string, unknown>>>([]);
+
+  useEffect(() => {
+    Promise.all([
+      fetch('/api/templates').then(r => r.json()),
+      fetch('/api/resources').then(r => r.json()),
+      fetch('/api/projects').then(r => r.json()),
+    ]).then(([t, r, p]) => {
+      setStats({ templates: t.length, resources: r.length, projects: p.length });
+      setProjects(p.slice(0, 5));
+    });
+  }, []);
+
+  const S = { padding: '28px 32px' };
+  const card = {
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: 12, padding: '20px 24px'
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div style={S}>
+      <div style={{ marginBottom: 32 }}>
+        <h1 style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.5px', margin: 0 }}>仪表盘</h1>
+        <p style={{ color: 'var(--muted)', marginTop: 6, fontSize: 14 }}>欢迎使用 AI 封面生成工具</p>
+      </div>
+
+      {/* Stats */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 32 }}>
+        {[
+          { label: '模板', value: stats.templates, href: '/templates', color: '#f97316' },
+          { label: '资源', value: stats.resources, href: '/resources', color: '#06b6d4' },
+          { label: '项目', value: stats.projects, href: '/generate', color: '#a855f7' },
+        ].map(s => (
+          <Link key={s.label} href={s.href} style={{ textDecoration: 'none' }}>
+            <div style={{ ...card, cursor: 'pointer' }}>
+              <div style={{ fontSize: 36, fontWeight: 900, color: s.color }}>{s.value}</div>
+              <div style={{ fontSize: 13, color: 'var(--muted)', marginTop: 4 }}>{s.label}</div>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Quick actions */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 32 }}>
+        <Link href="/templates" style={{ textDecoration: 'none' }}>
+          <div style={{ ...card, display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer' }}>
+            <div style={{ width: 44, height: 44, borderRadius: 10, background: '#f9731620', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>◧</div>
+            <div>
+              <div style={{ fontWeight: 600, fontSize: 15 }}>上传模板</div>
+              <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 2 }}>添加封面模板并 AI 分析元素</div>
+            </div>
+          </div>
+        </Link>
+        <Link href="/generate" style={{ textDecoration: 'none' }}>
+          <div style={{ ...card, display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer', border: '1px solid var(--accent)' }}>
+            <div style={{ width: 44, height: 44, borderRadius: 10, background: '#f9731630', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>✦</div>
+            <div>
+              <div style={{ fontWeight: 600, fontSize: 15 }}>生成封面</div>
+              <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 2 }}>上传视频或文案，AI 生成封面</div>
+            </div>
+          </div>
+        </Link>
+      </div>
+
+      {/* Recent projects */}
+      {projects.length > 0 && (
+        <div>
+          <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>最近项目</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {projects.map((p: Record<string, unknown>) => (
+              <Link key={p.id as number} href={`/generate?project=${p.id}`} style={{ textDecoration: 'none' }}>
+                <div style={{ ...card, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px' }}>
+                  <div>
+                    <div style={{ fontWeight: 500, fontSize: 14 }}>{(p.title as string) || '无标题'}</div>
+                    <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 2 }}>
+                      {p.cover_count as number} 个封面 · {new Date(p.created_at as string).toLocaleDateString('zh-CN')}
+                    </div>
+                  </div>
+                  <span style={{
+                    fontSize: 11, padding: '3px 10px', borderRadius: 20,
+                    background: p.status === 'done' ? '#16a34a20' : p.status === 'processing' ? '#f9731620' : '#71717a20',
+                    color: p.status === 'done' ? '#16a34a' : p.status === 'processing' ? '#f97316' : '#71717a'
+                  }}>{p.status === 'done' ? '完成' : p.status === 'processing' ? '处理中' : '待处理'}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      )}
     </div>
   );
 }

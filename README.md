@@ -1,36 +1,155 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cover Generator — AI 视频封面生成器
 
-## Getting Started
+基于 AI 的视频封面批量生成工具，支持多模板并行、风格迁移、自动质量审核。
 
-First, run the development server:
+---
+
+## 生成原理
+
+```
+┌──────────────────────────────────────────────────────┐
+│                      用户输入                         │
+│  视频文件 / 文案 / 标题 / 风格图片 / 风格描述          │
+└──────────────────┬───────────────────────────────────┘
+                   │
+         ┌─────────▼──────────┐
+         │   有视频文件？       │
+         │   ↓ 是              │
+         │   提取音频           │
+         │   [Whisper] → 文案  │
+         └─────────┬──────────┘
+                   │
+         ┌─────────▼──────────────┐
+         │   需要生成标题？         │
+         │   [gemini-flash] → 标题 │
+         └─────────┬──────────────┘
+                   │
+                   │  每个模板并行处理（最多 5 并发）
+                   │
+         ┌─────────▼────────────────────────────────┐
+         │            Phase 1  元素适配               │
+         │           [gemini-flash]                  │
+         │                                           │
+         │  文案 + 标题 + 风格要求                    │
+         │       ↓                                   │
+         │  ┌────────────┬──────────────────────┐   │
+         │  │ main_title │ "封神！全站最硬核操作" │   │
+         │  │ subtitle   │ "看完直接跪了"         │   │
+         │  │ image      │ "古风宗师半身像..."    │   │
+         │  │ background │ "深棕宣纸纹理..."      │   │
+         │  └────────────┴──────────────────────┘   │
+         └─────────┬────────────────────────────────┘
+                   │
+         ┌─────────▼────────────────────────────────┐
+         │            Phase 2  图片生成               │
+         │          [gemini-image-pro]               │
+         │                                           │
+         │  模板参考图（可选）+ 资源素材 + 元素内容    │
+         │              ↓                            │
+         │           封面图片                         │
+         └─────────┬────────────────────────────────┘
+                   │
+         ┌─────────▼────────────────────────────────┐
+         │            Phase 3  质量审核               │
+         │           [gemini-flash]                  │
+         │                                           │
+         │  文字是否截断 / 布局是否合理 / 标题是否醒目 │
+         │                                           │
+         │   通过 ──────────────────────→  ✓ 完成   │
+         │     ↑                                     │
+         │   不通过（最多重试 3 次）                   │
+         │     └── 带反馈重新调用 Phase 2 ────────────┘
+         └──────────────────────────────────────────┘
+```
+
+---
+
+## 功能特性
+
+- **多模板并行**：一次生成多个模板封面，最多 5 并发
+- **视频转文案**：自动提取音频，Whisper 转录
+- **AI 标题生成**：根据文案生成爆款标题
+- **两阶段生成**：先适配元素内容，再生成图片，风格更统一
+- **风格迁移**：上传参考图或文字描述风格
+- **自动质量审核**：生成后自动检测，不合格自动修正（最多 3 次）
+- **资源库**：管理人物/Logo 素材，生成时自动匹配
+- **实时进度**：前端轮询展示每步处理日志
+
+---
+
+## 技术栈
+
+| 层级 | 技术 |
+|------|------|
+| 前端框架 | Next.js 15 App Router + TypeScript |
+| 数据库 | SQLite (better-sqlite3) |
+| AI 接口 | OpenAI 兼容 API |
+| 文案提取 | Whisper |
+| 文本分析 | gemini-3-flash-preview |
+| 图片生成 | gemini-3-pro-image-preview |
+| 视频处理 | ffmpeg |
+
+---
+
+## 快速开始
+
+**1. 安装依赖**
+
+```bash
+npm install
+```
+
+**2. 配置环境变量**，新建 `.env.local`：
+
+```env
+AI_BASE_URL=https://your-api-base/v1
+AI_API_KEY=your-key
+
+ANALYSIS_MODEL=gemini-3-flash-preview
+IMAGE_GEN_MODEL=gemini-3-pro-image-preview
+```
+
+**3. 创建上传目录**
+
+```bash
+mkdir -p public/uploads/{templates,covers,frames}
+```
+
+**4. 启动**
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+访问 `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 使用流程
 
-## Learn More
+```
+① 模板库  →  上传封面模板图  →  AI 分析元素结构
+② 资源库  →  上传人物/Logo 素材  →  分类管理
+③ 生成封面：
+     Step 1  输入文案 / 上传视频  +  选择输出比例
+     Step 2  选择模板（可多选）
+     Step 3  选择资源分类  +  生成选项
+     Step 4  风格参考图 / 风格描述（可选）
+     → 开始生成 → 实时查看进度 → 下载封面
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 项目结构
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/
+├── generate/     封面生成向导
+├── templates/    模板库管理
+├── resources/    素材资源库
+└── api/          API 路由
+lib/
+├── ai.ts         所有 AI 调用（分析 / 生成 / 审核）
+└── db.ts         SQLite 数据库初始化
+public/uploads/   上传文件存储
+```
