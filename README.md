@@ -32,23 +32,37 @@
 
 ## 🖼 How It Works
 
+Cover Generator works in two phases: **Template Setup** (once) and **Cover Generation** (per video).
+
+### Phase 1 — Template Setup
+
 <div align="center">
 <img src="public/illus-pipeline.en.png" width="600" />
 </div>
 
-Upload your video. Whisper extracts and transcribes the audio. The AI analyzes the transcript, generates a punchy title, then produces a cover image — all in one automated pipeline.
+1. **Upload a reference cover** — any existing thumbnail you like
+2. **AI element extraction** — the model analyzes the image and breaks it into generalized elements: `background`, `main_title`, `subtitle`, `image`, `logo`, `decoration` — each with position, style constraints, and content rules (no specific content, only structural patterns)
+3. **Template saved** — the layout blueprint is stored in the database, ready to be applied to any future video
+
+### Phase 2 — Cover Generation
 
 <div align="center">
 <img src="public/illus-batch.en.png" width="600" />
 </div>
 
-Select multiple templates and generate up to 5 covers in parallel. Compare results side-by-side and publish the one that fits best.
+4. **Upload video** — ffmpeg extracts the audio track; Whisper transcribes it into a script
+5. **Viral title generation** — AI writes a platform-optimized title from the transcript
+6. **Resource library search** — AI scans your uploaded assets (logos, characters, illustrations) and automatically selects the ones that match each element's needs
+7. **Video frame extraction** — for image elements, ffmpeg samples frames and the vision model picks the most visually relevant ones
+8. **Element adaptation** — each template element is filled with actual content derived from the title, script, and style reference
+9. **Cover generation** — the image model reconstructs the template's layout structure with the new content
 
 <div align="center">
 <img src="public/illus-review.en.png" width="600" />
 </div>
 
-Every cover goes through an AI review pass. If it doesn't meet the quality bar, the system automatically retries with feedback — up to 3 times — before surfacing the result.
+10. **AI quality review** — a vision model inspects the output for truncated text, layout issues, and weak composition; if it fails, the system regenerates with specific feedback — up to **3 automatic retries**
+11. **Done** — up to 5 templates processed in parallel; pick the best result
 
 ## 🚀 Quick Start
 
