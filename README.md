@@ -1,3 +1,5 @@
+[中文](./README.zh.md) | **English**
+
 # Cover Generator
 
 <p align="center">
@@ -22,7 +24,7 @@
 Drop in a video file (or paste a script), pick your templates, and get production-ready thumbnails — in parallel, with AI quality review and auto-correction built in.
 
 <p align="center">
-  <img src="public/illus-pipeline.png" width="600" alt="Pipeline" />
+  <img src="public/illus-pipeline.en.png" width="600" alt="Pipeline" />
 </p>
 
 ## Pipeline
@@ -63,14 +65,14 @@ Video / Script / Title
 | **Real-time progress** | Live log streaming per template |
 
 <p align="center">
-  <img src="public/illus-batch.png" width="560" alt="Batch generation" />
+  <img src="public/illus-batch.en.png" width="600" alt="Batch generation" />
 </p>
 
 ## Quick Start
 
 ```bash
 npm install
-cp .env.example .env.local   # add your API key
+cp .env.example .env.local
 mkdir -p public/uploads/{templates,covers,frames}
 npm run dev
 ```
@@ -86,8 +88,6 @@ ANALYSIS_MODEL=gemini-3-flash-preview
 IMAGE_GEN_MODEL=gemini-3-pro-image-preview
 ```
 
-Any OpenAI-compatible endpoint works (Gemini, Qwen, etc.).
-
 ## Usage
 
 ```
@@ -102,7 +102,7 @@ Any OpenAI-compatible endpoint works (Gemini, Qwen, etc.).
 ```
 
 <p align="center">
-  <img src="public/illus-review.png" width="560" alt="Quality review" />
+  <img src="public/illus-review.en.png" width="600" alt="Quality review" />
 </p>
 
 ## Tech Stack
@@ -115,10 +115,6 @@ Any OpenAI-compatible endpoint works (Gemini, Qwen, etc.).
 | AI API | OpenAI-compatible |
 | Transcription | Whisper |
 | Video | ffmpeg |
-
-## Why self-hosted?
-
-No per-cover SaaS fees. Your video content never leaves your infrastructure. Swap models freely.
 
 ## License
 

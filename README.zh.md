@@ -1,3 +1,5 @@
+**中文** | [English](./README.md)
+
 # Cover Generator — AI 视频封面生成器
 
 <p align="center">
@@ -22,7 +24,7 @@
 上传视频文件（或粘贴文案），选好模板，自动生成多套可发布的封面图——多模板并行处理，内置 AI 质量审核与自动修正。
 
 <p align="center">
-  <img src="public/illus-pipeline.png" width="600" alt="生成流程" />
+  <img src="public/illus-pipeline.zh.png" width="600" alt="生成流程" />
 </p>
 
 ## 生成原理
@@ -63,14 +65,14 @@
 | **实时进度** | 每个模板独立日志流式展示 |
 
 <p align="center">
-  <img src="public/illus-batch.png" width="560" alt="批量生成" />
+  <img src="public/illus-batch.zh.png" width="600" alt="批量生成" />
 </p>
 
 ## 快速开始
 
 ```bash
 npm install
-cp .env.example .env.local   # 填入 API Key
+cp .env.example .env.local
 mkdir -p public/uploads/{templates,covers,frames}
 npm run dev
 ```
@@ -86,8 +88,6 @@ ANALYSIS_MODEL=gemini-3-flash-preview
 IMAGE_GEN_MODEL=gemini-3-pro-image-preview
 ```
 
-支持任意 OpenAI 兼容接口（Gemini、Qwen 等）。
-
 ## 使用流程
 
 ```
@@ -102,7 +102,7 @@ IMAGE_GEN_MODEL=gemini-3-pro-image-preview
 ```
 
 <p align="center">
-  <img src="public/illus-review.png" width="560" alt="质量审核" />
+  <img src="public/illus-review.zh.png" width="600" alt="质量审核" />
 </p>
 
 ## 技术栈
@@ -115,10 +115,6 @@ IMAGE_GEN_MODEL=gemini-3-pro-image-preview
 | AI 接口 | OpenAI 兼容 API |
 | 语音转录 | Whisper |
 | 视频处理 | ffmpeg |
-
-## 为什么选择自部署？
-
-无按次计费。视频内容不离开本地。模型随时可换。
 
 ## License
 
