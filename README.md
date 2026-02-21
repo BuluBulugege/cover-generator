@@ -1,155 +1,158 @@
-# Cover Generator — AI 视频封面生成器
+# Cover Generator
 
-基于 AI 的视频封面批量生成工具，支持多模板并行、风格迁移、自动质量审核。
+> AI-powered video cover batch generator — from raw video to polished thumbnails, fully automated.
+
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://typescriptlang.org)
+[![SQLite](https://img.shields.io/badge/SQLite-WAL-green?logo=sqlite)](https://sqlite.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
 ---
 
-## 生成原理
+## What it does
+
+Cover Generator takes a video file (or raw script) and automatically produces ready-to-publish thumbnails across multiple visual templates — in parallel, with AI quality review and auto-correction built in.
+
+**The full pipeline:**
 
 ```
-┌──────────────────────────────────────────────────────┐
-│                      用户输入                         │
-│  视频文件 / 文案 / 标题 / 风格图片 / 风格描述          │
-└──────────────────┬───────────────────────────────────┘
-                   │
-         ┌─────────▼──────────┐
-         │   有视频文件？       │
-         │   ↓ 是              │
-         │   提取音频           │
-         │   [Whisper] → 文案  │
-         └─────────┬──────────┘
-                   │
-         ┌─────────▼──────────────┐
-         │   需要生成标题？         │
-         │   [gemini-flash] → 标题 │
-         └─────────┬──────────────┘
-                   │
-                   │  每个模板并行处理（最多 5 并发）
-                   │
-         ┌─────────▼────────────────────────────────┐
-         │            Phase 1  元素适配               │
-         │           [gemini-flash]                  │
-         │                                           │
-         │  文案 + 标题 + 风格要求                    │
-         │       ↓                                   │
-         │  ┌────────────┬──────────────────────┐   │
-         │  │ main_title │ "封神！全站最硬核操作" │   │
-         │  │ subtitle   │ "看完直接跪了"         │   │
-         │  │ image      │ "古风宗师半身像..."    │   │
-         │  │ background │ "深棕宣纸纹理..."      │   │
-         │  └────────────┴──────────────────────┘   │
-         └─────────┬────────────────────────────────┘
-                   │
-         ┌─────────▼────────────────────────────────┐
-         │            Phase 2  图片生成               │
-         │          [gemini-image-pro]               │
-         │                                           │
-         │  模板参考图（可选）+ 资源素材 + 元素内容    │
-         │              ↓                            │
-         │           封面图片                         │
-         └─────────┬────────────────────────────────┘
-                   │
-         ┌─────────▼────────────────────────────────┐
-         │            Phase 3  质量审核               │
-         │           [gemini-flash]                  │
-         │                                           │
-         │  文字是否截断 / 布局是否合理 / 标题是否醒目 │
-         │                                           │
-         │   通过 ──────────────────────→  ✓ 完成   │
-         │     ↑                                     │
-         │   不通过（最多重试 3 次）                   │
-         │     └── 带反馈重新调用 Phase 2 ────────────┘
-         └──────────────────────────────────────────┘
+Video file / Script / Title
+        │
+        ▼
+  [Whisper] Extract transcript
+        │
+        ▼
+  [gemini-flash] Generate viral title
+        │
+        ├─── Template A ──┐
+        ├─── Template B ──┤
+        ├─── Template C ──┤  (up to 5 parallel)
+        │                 │
+        ▼                 ▼
+  Phase 1: Element adaptation   (text, image prompts, background)
+  Phase 2: Image generation     (gemini-image-pro)
+  Phase 3: Quality review       (auto-retry up to 3×)
+        │
+        ▼
+  ✓ Final covers — download or use directly
 ```
 
 ---
 
-## 功能特性
+## Key Features
 
-- **多模板并行**：一次生成多个模板封面，最多 5 并发
-- **视频转文案**：自动提取音频，Whisper 转录
-- **AI 标题生成**：根据文案生成爆款标题
-- **两阶段生成**：先适配元素内容，再生成图片，风格更统一
-- **风格迁移**：上传参考图或文字描述风格
-- **自动质量审核**：生成后自动检测，不合格自动修正（最多 3 次）
-- **资源库**：管理人物/Logo 素材，生成时自动匹配
-- **实时进度**：前端轮询展示每步处理日志
-
----
-
-## 技术栈
-
-| 层级 | 技术 |
-|------|------|
-| 前端框架 | Next.js 15 App Router + TypeScript |
-| 数据库 | SQLite (better-sqlite3) |
-| AI 接口 | OpenAI 兼容 API |
-| 文案提取 | Whisper |
-| 文本分析 | gemini-3-flash-preview |
-| 图片生成 | gemini-3-pro-image-preview |
-| 视频处理 | ffmpeg |
+| Feature | Details |
+|---|---|
+| **Batch multi-template** | Generate covers for up to 5 templates simultaneously |
+| **Video → script** | Auto audio extraction + Whisper transcription |
+| **Viral title generation** | Platform-aware (Bilibili / YouTube) title suggestions |
+| **Two-phase generation** | Element adaptation first, then image generation — more consistent style |
+| **Style transfer** | Upload a reference image or describe the style in text |
+| **Self-healing quality loop** | AI reviewer detects issues and retries with corrective feedback (max 3×) |
+| **Asset library** | Manage character / logo assets; auto-injected into covers |
+| **Real-time progress** | Live log streaming per template during generation |
+| **Project history** | All generation runs saved and browsable |
 
 ---
 
-## 快速开始
+## Quick Start
 
-**1. 安装依赖**
+**Prerequisites:** Node.js 18+, ffmpeg, Whisper (for video input)
 
 ```bash
+# 1. Install dependencies
 npm install
-```
 
-**2. 配置环境变量**，新建 `.env.local`：
+# 2. Configure environment
+cp .env.example .env.local
+# Edit .env.local with your API credentials
 
-```env
-AI_BASE_URL=https://your-api-base/v1
-AI_API_KEY=your-key
-
-ANALYSIS_MODEL=gemini-3-flash-preview
-IMAGE_GEN_MODEL=gemini-3-pro-image-preview
-```
-
-**3. 创建上传目录**
-
-```bash
+# 3. Create upload directories
 mkdir -p public/uploads/{templates,covers,frames}
-```
 
-**4. 启动**
-
-```bash
+# 4. Start
 npm run dev
 ```
 
-访问 `http://localhost:3000`
+Open [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## 使用流程
+## Configuration
+
+```env
+# .env.local
+
+AI_BASE_URL=https://your-openai-compatible-api/v1
+AI_API_KEY=your-api-key
+
+# Models (defaults shown — swap for any compatible model)
+ANALYSIS_MODEL=gemini-3-flash-preview
+IMAGE_GEN_MODEL=gemini-3-pro-image-preview
+VIDEO_SCRIPT_MODEL=gemini-3-flash-preview
+```
+
+Any OpenAI-compatible API endpoint works (Gemini, Qwen, etc.).
+
+---
+
+## Usage
 
 ```
-① 模板库  →  上传封面模板图  →  AI 分析元素结构
-② 资源库  →  上传人物/Logo 素材  →  分类管理
-③ 生成封面：
-     Step 1  输入文案 / 上传视频  +  选择输出比例
-     Step 2  选择模板（可多选）
-     Step 3  选择资源分类  +  生成选项
-     Step 4  风格参考图 / 风格描述（可选）
-     → 开始生成 → 实时查看进度 → 下载封面
+① Templates  →  Upload cover template images  →  AI analyzes element structure
+② Resources  →  Upload character / logo assets  →  Organize by category
+③ Generate:
+     Step 1  Paste script or upload video  +  choose output ratio
+     Step 2  Select templates (multi-select)
+     Step 3  Choose resource categories  +  generation options
+     Step 4  Optional: style reference image or text description
+     → Start  →  Watch live progress  →  Download covers
 ```
 
 ---
 
-## 项目结构
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 15 App Router + TypeScript + React 19 |
+| Styling | Tailwind CSS 4 |
+| Database | SQLite via better-sqlite3 (WAL mode) |
+| AI API | OpenAI-compatible (Gemini / Qwen / etc.) |
+| Transcription | Whisper |
+| Video processing | ffmpeg |
+
+---
+
+## Project Structure
 
 ```
 app/
-├── generate/     封面生成向导
-├── templates/    模板库管理
-├── resources/    素材资源库
-└── api/          API 路由
+├── page.tsx              Dashboard
+├── generate/             Cover generation wizard
+├── templates/            Template library
+├── resources/            Asset library
+├── settings/             Configuration
+└── api/                  API routes
+
 lib/
-├── ai.ts         所有 AI 调用（分析 / 生成 / 审核）
-└── db.ts         SQLite 数据库初始化
-public/uploads/   上传文件存储
+├── ai.ts                 All AI calls (analysis / generation / review)
+└── db.ts                 SQLite schema + initialization
+
+public/uploads/           File storage (gitignored)
 ```
+
+---
+
+## Why self-hosted?
+
+- No per-cover SaaS fees
+- Your video content and scripts never leave your infrastructure
+- Full control over models — swap to any OpenAI-compatible API
+- Extend templates and workflows without vendor lock-in
+
+---
+
+## License
+
+MIT
