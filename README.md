@@ -1,157 +1,124 @@
 # Cover Generator
 
-> AI-powered video cover batch generator — from raw video to polished thumbnails, fully automated.
+<p align="center">
+  <img src="public/logo.png" width="120" alt="Cover Generator" />
+</p>
 
-[![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://typescriptlang.org)
-[![SQLite](https://img.shields.io/badge/SQLite-WAL-green?logo=sqlite)](https://sqlite.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+<p align="center">
+  AI-powered video thumbnail batch generator — from raw video to polished covers, fully automated.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-15-black?logo=next.js" />
+  <img src="https://img.shields.io/badge/TypeScript-5-blue?logo=typescript" />
+  <img src="https://img.shields.io/badge/SQLite-WAL-green?logo=sqlite" />
+  <img src="https://img.shields.io/badge/License-MIT-yellow" />
+</p>
 
 ---
 
 ## What it does
 
-Cover Generator takes a video file (or raw script) and automatically produces ready-to-publish thumbnails across multiple visual templates — in parallel, with AI quality review and auto-correction built in.
+Drop in a video file (or paste a script), pick your templates, and get production-ready thumbnails — in parallel, with AI quality review and auto-correction built in.
 
-**The full pipeline:**
+<p align="center">
+  <img src="public/illus-pipeline.png" width="600" alt="Pipeline" />
+</p>
+
+## Pipeline
 
 ```
-Video file / Script / Title
+Video / Script / Title
         │
         ▼
-  [Whisper] Extract transcript
+  [Whisper] Transcribe audio
         │
         ▼
   [gemini-flash] Generate viral title
         │
-        ├─── Template A ──┐
-        ├─── Template B ──┤
-        ├─── Template C ──┤  (up to 5 parallel)
-        │                 │
-        ▼                 ▼
-  Phase 1: Element adaptation   (text, image prompts, background)
-  Phase 2: Image generation     (gemini-image-pro)
-  Phase 3: Quality review       (auto-retry up to 3×)
+        ├── Template A ──┐
+        ├── Template B ──┤  up to 5 parallel
+        ├── Template C ──┘
         │
         ▼
-  ✓ Final covers — download or use directly
+  Phase 1 · Element adaptation   (titles, image prompts, backgrounds)
+  Phase 2 · Image generation     (gemini-image-pro)
+  Phase 3 · Quality review       (auto-retry up to 3×)
+        │
+        ▼
+  ✓ Final covers
 ```
 
----
+## Features
 
-## Key Features
-
-| Feature | Details |
+| | |
 |---|---|
-| **Batch multi-template** | Generate covers for up to 5 templates simultaneously |
+| **Multi-template batch** | Up to 5 templates rendered in parallel |
 | **Video → script** | Auto audio extraction + Whisper transcription |
-| **Viral title generation** | Platform-aware (Bilibili / YouTube) title suggestions |
-| **Two-phase generation** | Element adaptation first, then image generation — more consistent style |
-| **Style transfer** | Upload a reference image or describe the style in text |
-| **Self-healing quality loop** | AI reviewer detects issues and retries with corrective feedback (max 3×) |
-| **Asset library** | Manage character / logo assets; auto-injected into covers |
-| **Real-time progress** | Live log streaming per template during generation |
-| **Project history** | All generation runs saved and browsable |
+| **Viral title generation** | Platform-aware (Bilibili / YouTube) |
+| **Two-phase generation** | Element adaptation first → consistent style |
+| **Style transfer** | Reference image or text description |
+| **Self-healing quality loop** | AI reviewer auto-retries with feedback (max 3×) |
+| **Asset library** | Characters / logos auto-injected into covers |
+| **Real-time progress** | Live log streaming per template |
 
----
+<p align="center">
+  <img src="public/illus-batch.png" width="560" alt="Batch generation" />
+</p>
 
 ## Quick Start
 
-**Prerequisites:** Node.js 18+, ffmpeg, Whisper (for video input)
-
 ```bash
-# 1. Install dependencies
 npm install
-
-# 2. Configure environment
-cp .env.example .env.local
-# Edit .env.local with your API credentials
-
-# 3. Create upload directories
+cp .env.example .env.local   # add your API key
 mkdir -p public/uploads/{templates,covers,frames}
-
-# 4. Start
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
-
----
+Open http://localhost:3000
 
 ## Configuration
 
 ```env
-# .env.local
-
 AI_BASE_URL=https://your-openai-compatible-api/v1
-AI_API_KEY=your-api-key
-
-# Models (defaults shown — swap for any compatible model)
+AI_API_KEY=your-key
 ANALYSIS_MODEL=gemini-3-flash-preview
 IMAGE_GEN_MODEL=gemini-3-pro-image-preview
-VIDEO_SCRIPT_MODEL=gemini-3-flash-preview
 ```
 
-Any OpenAI-compatible API endpoint works (Gemini, Qwen, etc.).
-
----
+Any OpenAI-compatible endpoint works (Gemini, Qwen, etc.).
 
 ## Usage
 
 ```
-① Templates  →  Upload cover template images  →  AI analyzes element structure
-② Resources  →  Upload character / logo assets  →  Organize by category
+① Templates  →  upload template images  →  AI analyzes element structure
+② Resources  →  upload character/logo assets  →  organize by category
 ③ Generate:
-     Step 1  Paste script or upload video  +  choose output ratio
-     Step 2  Select templates (multi-select)
-     Step 3  Choose resource categories  +  generation options
-     Step 4  Optional: style reference image or text description
-     → Start  →  Watch live progress  →  Download covers
+     Step 1  paste script or upload video + choose output ratio
+     Step 2  select templates (multi-select)
+     Step 3  choose resource categories + generation options
+     Step 4  optional style reference image or description
+     → Start → watch live progress → download covers
 ```
 
----
+<p align="center">
+  <img src="public/illus-review.png" width="560" alt="Quality review" />
+</p>
 
 ## Tech Stack
 
 | Layer | Technology |
 |---|---|
-| Framework | Next.js 15 App Router + TypeScript + React 19 |
+| Framework | Next.js 15 + TypeScript + React 19 |
 | Styling | Tailwind CSS 4 |
-| Database | SQLite via better-sqlite3 (WAL mode) |
-| AI API | OpenAI-compatible (Gemini / Qwen / etc.) |
+| Database | SQLite (better-sqlite3, WAL mode) |
+| AI API | OpenAI-compatible |
 | Transcription | Whisper |
-| Video processing | ffmpeg |
-
----
-
-## Project Structure
-
-```
-app/
-├── page.tsx              Dashboard
-├── generate/             Cover generation wizard
-├── templates/            Template library
-├── resources/            Asset library
-├── settings/             Configuration
-└── api/                  API routes
-
-lib/
-├── ai.ts                 All AI calls (analysis / generation / review)
-└── db.ts                 SQLite schema + initialization
-
-public/uploads/           File storage (gitignored)
-```
-
----
+| Video | ffmpeg |
 
 ## Why self-hosted?
 
-- No per-cover SaaS fees
-- Your video content and scripts never leave your infrastructure
-- Full control over models — swap to any OpenAI-compatible API
-- Extend templates and workflows without vendor lock-in
-
----
+No per-cover SaaS fees. Your video content never leaves your infrastructure. Swap models freely.
 
 ## License
 
