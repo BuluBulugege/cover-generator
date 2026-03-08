@@ -6,12 +6,12 @@ type Category = { id: number; name: string };
 type Cover = { id: number; template_id: number; template_name: string; platform: string; template_image: string; image_path: string; status: string; error: string; log: string };
 type Project = { id: number; title: string; status: string; covers: Cover[] };
 
-const card = { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12 };
+const card = { background: 'var(--surface)', border: '5px solid var(--border)', padding: '24px' };
 const btn = (accent = false, danger = false) => ({
-  padding: '10px 20px', borderRadius: 8, border: accent ? 'none' : danger ? '1px solid #ef444440' : '1px solid var(--border)',
-  background: accent ? 'var(--accent)' : 'transparent',
-  color: accent ? '#000' : danger ? '#ef4444' : 'var(--text)',
-  cursor: 'pointer', fontSize: 14, fontWeight: 600
+  padding: '12px 24px', border: '3px solid var(--border)', textTransform: 'uppercase' as const, letterSpacing: '0.5px',
+  background: accent ? 'var(--accent)' : danger ? '#ff3366' : 'var(--surface)',
+  color: accent ? 'var(--text-inv)' : danger ? 'var(--text-inv)' : 'var(--text)',
+  cursor: 'pointer', fontSize: 12, fontWeight: 700
 });
 
 export default function GeneratePage() {
@@ -100,31 +100,31 @@ export default function GeneratePage() {
   };
 
   return (
-    <div style={{ padding: '28px 32px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
+    <div style={{ padding: '48px 56px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 40 }}>
         <div>
-          <h1 style={{ fontSize: 28, fontWeight: 800, margin: 0 }}>生成封面</h1>
-          <p style={{ color: 'var(--muted)', marginTop: 6, fontSize: 14 }}>AI 驱动的视频封面生成</p>
+          <h1 style={{ fontFamily: 'var(--font-syne), sans-serif', fontSize: 48, fontWeight: 800, margin: 0, color: 'var(--text-inv)', letterSpacing: '-1px' }}>生成封面</h1>
+          <p style={{ color: 'var(--accent2)', marginTop: 8, fontSize: 11, textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 700 }}>AI COVER GENERATOR</p>
         </div>
         {step > 1 && <button style={btn()} onClick={reset}>重新开始</button>}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 32 }}>
         <div>
           {/* Step indicator */}
           {step < 5 && (
-            <div style={{ display: 'flex', gap: 0, marginBottom: 28 }}>
-              {['输入内容', '选择模板', '选择资源', '参考图片'].map((s, i) => (
+            <div style={{ display: 'flex', gap: 0, marginBottom: 32 }}>
+              {['上传视频', '选择模板', '选择资源', '参考图片'].map((s, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }} onClick={() => setStep(i + 1)}>
-                    <div style={{ width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700,
-                      background: step === i + 1 ? 'var(--accent)' : step > i + 1 ? '#16a34a' : 'var(--surface2)',
-                      color: step === i + 1 ? '#000' : step > i + 1 ? '#fff' : 'var(--muted)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }} onClick={() => setStep(i + 1)}>
+                    <div style={{ width: 32, height: 32, border: '3px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700,
+                      background: step === i + 1 ? 'var(--accent)' : step > i + 1 ? 'var(--accent2)' : 'var(--surface)',
+                      color: step >= i + 1 ? 'var(--border)' : 'var(--text)' }}>
                       {step > i + 1 ? '✓' : i + 1}
                     </div>
-                    <span style={{ fontSize: 14, fontWeight: step === i + 1 ? 600 : 400, color: step === i + 1 ? 'var(--text)' : 'var(--muted)' }}>{s}</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: step === i + 1 ? 'var(--text-inv)' : 'var(--text)' }}>{s}</span>
                   </div>
-                  {i < 3 && <div style={{ width: 40, height: 1, background: 'var(--border)', margin: '0 8px' }} />}
+                  {i < 3 && <div style={{ width: 32, height: 3, background: step > i + 1 ? 'var(--accent2)' : 'var(--border)', margin: '0 12px' }} />}
                 </div>
               ))}
             </div>
@@ -132,52 +132,52 @@ export default function GeneratePage() {
 
           {/* Step 1: Input */}
           {step === 1 && (
-            <div style={{ ...card, padding: 24 }}>
-              <h3 style={{ margin: '0 0 20px', fontSize: 16, fontWeight: 700 }}>输入视频内容</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={card}>
+              <h3 style={{ margin: '0 0 24px', fontSize: 14, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text)' }}>输入视频内容</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                 <div>
-                  <label style={{ fontSize: 13, color: 'var(--muted)', display: 'block', marginBottom: 8 }}>上传视频（可选，将自动提取文案）</label>
-                  <div style={{ border: '2px dashed var(--border)', borderRadius: 10, padding: '20px', textAlign: 'center', cursor: 'pointer' }}
+                  <label style={{ fontSize: 11, color: 'var(--text)', display: 'block', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 700 }}>上传视频</label>
+                  <div style={{ border: '3px dashed var(--border)', padding: '24px', textAlign: 'center', cursor: 'pointer', background: videoFile ? 'var(--accent2)' : 'transparent' }}
                     onClick={() => videoRef.current?.click()}>
                     {videoFile ? (
-                      <div style={{ fontSize: 14 }}>✓ {videoFile.name} <button onClick={e => { e.stopPropagation(); setVideoFile(null); }} style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer' }}>×</button></div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--border)' }}>✓ {videoFile.name} <button onClick={e => { e.stopPropagation(); setVideoFile(null); }} style={{ background: 'none', border: 'none', color: 'var(--border)', cursor: 'pointer', fontSize: 16 }}>×</button></div>
                     ) : (
-                      <div style={{ color: 'var(--muted)', fontSize: 14 }}>点击上传视频文件</div>
+                      <div style={{ color: 'var(--text)', fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 700 }}>点击上传视频</div>
                     )}
                     <input ref={videoRef} type="file" accept="video/*" style={{ display: 'none' }} onChange={e => setVideoFile(e.target.files?.[0] || null)} />
                   </div>
                 </div>
                 <div>
-                  <label style={{ fontSize: 13, color: 'var(--muted)', display: 'block', marginBottom: 8 }}>文案内容（如已有视频可留空）</label>
+                  <label style={{ fontSize: 11, color: 'var(--text)', display: 'block', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 700 }}>文案内容</label>
                   <textarea value={script} onChange={e => setScript(e.target.value)} rows={6}
-                    placeholder="粘贴视频文案或脚本内容..."
-                    style={{ width: '100%', padding: '12px 14px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface2)', color: 'var(--text)', fontSize: 14, resize: 'vertical' }} />
+                    placeholder="粘贴视频文案..."
+                    style={{ width: '100%', padding: '14px', border: '3px solid var(--border)', background: 'var(--surface2)', color: 'var(--text)', fontSize: 13, resize: 'vertical', fontFamily: 'inherit' }} />
                 </div>
                 <div>
-                  <label style={{ fontSize: 13, color: 'var(--muted)', display: 'block', marginBottom: 8 }}>封面标题</label>
+                  <label style={{ fontSize: 11, color: 'var(--text)', display: 'block', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 700 }}>封面标题</label>
                   <input value={title} onChange={e => setTitle(e.target.value)} disabled={generateTitle}
-                    placeholder={generateTitle ? 'AI 将自动生成爆款标题' : '输入封面标题...'}
-                    style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface2)', color: 'var(--text)', fontSize: 14, opacity: generateTitle ? 0.5 : 1 }} />
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 10, cursor: 'pointer', fontSize: 13 }}>
-                    <input type="checkbox" checked={generateTitle} onChange={e => setGenerateTitle(e.target.checked)} />
-                    <span style={{ color: 'var(--muted)' }}>AI 自动生成爆款标题</span>
+                    placeholder={generateTitle ? 'AI 自动生成' : '输入标题...'}
+                    style={{ width: '100%', padding: '12px 14px', border: '3px solid var(--border)', background: 'var(--surface2)', color: 'var(--text)', fontSize: 13, opacity: generateTitle ? 0.5 : 1, fontFamily: 'inherit' }} />
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 12, cursor: 'pointer', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 700 }}>
+                    <input type="checkbox" checked={generateTitle} onChange={e => setGenerateTitle(e.target.checked)} style={{ width: 16, height: 16 }} />
+                    <span style={{ color: 'var(--text)' }}>AI 自动生成标题</span>
                   </label>
                 </div>
                 <div>
-                  <label style={{ fontSize: 13, color: 'var(--muted)', display: 'block', marginBottom: 8 }}>输出尺寸</label>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  <label style={{ fontSize: 11, color: 'var(--text)', display: 'block', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 700 }}>输出尺寸</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
                     {['1:1', '4:3', '16:9', '9:16', '2:3', '3:4', '3:2', '21:9'].map(s => (
                       <div key={s} onClick={() => setSize(s)} style={{
-                        padding: '6px 14px', borderRadius: 20, cursor: 'pointer', fontSize: 13,
-                        border: size === s ? '1px solid var(--accent)' : '1px solid var(--border)',
-                        background: size === s ? '#f9731620' : 'transparent',
-                        color: size === s ? 'var(--accent)' : 'var(--text)',
+                        padding: '8px 16px', cursor: 'pointer', fontSize: 12, fontWeight: 700,
+                        border: '3px solid var(--border)',
+                        background: size === s ? 'var(--accent)' : 'var(--surface2)',
+                        color: size === s ? 'var(--text-inv)' : 'var(--text)',
                       }}>{s}</div>
                     ))}
                   </div>
                 </div>
               </div>
-              <div style={{ marginTop: 20, display: 'flex', justifyContent: 'flex-end' }}>
+              <div style={{ marginTop: 24, display: 'flex', justifyContent: 'flex-end' }}>
                 <button style={btn(true)} onClick={() => setStep(2)}>下一步 →</button>
               </div>
             </div>
@@ -185,26 +185,26 @@ export default function GeneratePage() {
 
           {/* Step 2: Select templates */}
           {step === 2 && (
-            <div style={{ ...card, padding: 24 }}>
-              <h3 style={{ margin: '0 0 20px', fontSize: 16, fontWeight: 700 }}>选择模板 <span style={{ color: 'var(--muted)', fontWeight: 400, fontSize: 13 }}>（已选 {selectedTemplates.length} 个）</span></h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 12 }}>
+            <div style={card}>
+              <h3 style={{ margin: '0 0 24px', fontSize: 14, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text)' }}>选择模板 <span style={{ color: 'var(--text)', opacity: 0.6, fontWeight: 400, fontSize: 11 }}>（已选 {selectedTemplates.length}）</span></h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
                 {templates.map(t => (
                   <div key={t.id} onClick={() => toggleTemplate(t.id)} style={{
-                    borderRadius: 10, overflow: 'hidden', cursor: 'pointer',
-                    border: selectedTemplates.includes(t.id) ? '2px solid var(--accent)' : '2px solid var(--border)'
+                    overflow: 'hidden', cursor: 'pointer',
+                    border: selectedTemplates.includes(t.id) ? '5px solid var(--accent)' : '5px solid var(--border)'
                   }}>
                     <div style={{ aspectRatio: '16/9', overflow: 'hidden', background: '#000' }}>
                       <img src={t.image_path} alt={t.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
-                    <div style={{ padding: '8px 12px', background: 'var(--surface2)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span style={{ fontSize: 13, fontWeight: 500 }}>{t.name}</span>
-                      {selectedTemplates.includes(t.id) && <span style={{ color: 'var(--accent)', fontSize: 16 }}>✓</span>}
+                    <div style={{ padding: '10px 12px', background: selectedTemplates.includes(t.id) ? 'var(--accent)' : 'var(--surface2)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', color: selectedTemplates.includes(t.id) ? 'var(--text-inv)' : 'var(--text)' }}>{t.name}</span>
+                      {selectedTemplates.includes(t.id) && <span style={{ color: 'var(--text-inv)', fontSize: 14 }}>✓</span>}
                     </div>
                   </div>
                 ))}
-                {templates.length === 0 && <div style={{ gridColumn: '1/-1', color: 'var(--muted)', textAlign: 'center', padding: 40 }}>请先在模板库中添加模板</div>}
+                {templates.length === 0 && <div style={{ gridColumn: '1/-1', color: 'var(--text)', textAlign: 'center', padding: 40, fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.5px' }}>请先添加模板</div>}
               </div>
-              <div style={{ marginTop: 20, display: 'flex', justifyContent: 'space-between' }}>
+              <div style={{ marginTop: 24, display: 'flex', justifyContent: 'space-between' }}>
                 <button style={btn()} onClick={() => setStep(1)}>← 上一步</button>
                 <button style={btn(true)} onClick={() => setStep(3)}>下一步 →</button>
               </div>
@@ -213,31 +213,31 @@ export default function GeneratePage() {
 
           {/* Step 3: Select resources */}
           {step === 3 && (
-            <div style={{ ...card, padding: 24 }}>
-              <h3 style={{ margin: '0 0 8px', fontSize: 16, fontWeight: 700 }}>选择资源分类</h3>
-              <p style={{ color: 'var(--muted)', fontSize: 13, marginBottom: 20 }}>选择要使用的资源分类，AI 将从中匹配合适的素材</p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+            <div style={card}>
+              <h3 style={{ margin: '0 0 8px', fontSize: 14, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text)' }}>选择资源分类</h3>
+              <p style={{ color: 'var(--text)', fontSize: 11, marginBottom: 20, opacity: 0.7 }}>选择要使用的资源分类</p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
                 {categories.map(c => (
                   <div key={c.id} onClick={() => toggleCategory(c.id)} style={{
-                    padding: '8px 18px', borderRadius: 20, cursor: 'pointer', fontSize: 14, fontWeight: 500,
-                    border: selectedCategories.includes(c.id) ? '1px solid var(--accent)' : '1px solid var(--border)',
-                    background: selectedCategories.includes(c.id) ? '#f9731620' : 'transparent',
-                    color: selectedCategories.includes(c.id) ? 'var(--accent)' : 'var(--text)'
+                    padding: '10px 20px', cursor: 'pointer', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px',
+                    border: '3px solid var(--border)',
+                    background: selectedCategories.includes(c.id) ? 'var(--accent2)' : 'var(--surface2)',
+                    color: selectedCategories.includes(c.id) ? 'var(--border)' : 'var(--text)'
                   }}>{c.name}</div>
                 ))}
-                {categories.length === 0 && <div style={{ color: 'var(--muted)', fontSize: 14 }}>暂无资源分类（可跳过）</div>}
+                {categories.length === 0 && <div style={{ color: 'var(--text)', fontSize: 12, opacity: 0.7 }}>暂无资源分类</div>}
               </div>
               {videoFile && (
-                <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 16, cursor: 'pointer', fontSize: 13 }}>
-                  <input type="checkbox" checked={useFrameAnalysis} onChange={e => setUseFrameAnalysis(e.target.checked)} />
-                  <span style={{ color: 'var(--muted)' }}>从视频帧中寻找匹配素材（软件UI截图、终端截图等场景适用）</span>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 20, cursor: 'pointer', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 700 }}>
+                  <input type="checkbox" checked={useFrameAnalysis} onChange={e => setUseFrameAnalysis(e.target.checked)} style={{ width: 16, height: 16 }} />
+                  <span style={{ color: 'var(--text)' }}>从视频帧中寻找素材</span>
                 </label>
               )}
-              <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12, cursor: 'pointer', fontSize: 13 }}>
-                <input type="checkbox" checked={useTemplateRef} onChange={e => setUseTemplateRef(e.target.checked)} />
-                <span style={{ color: 'var(--muted)' }}>参考模板图片风格和构图</span>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 12, cursor: 'pointer', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 700 }}>
+                <input type="checkbox" checked={useTemplateRef} onChange={e => setUseTemplateRef(e.target.checked)} style={{ width: 16, height: 16 }} />
+                <span style={{ color: 'var(--text)' }}>参考模板风格</span>
               </label>
-              <div style={{ marginTop: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ marginTop: 24, display: 'flex', justifyContent: 'space-between' }}>
                 <button style={btn()} onClick={() => setStep(2)}>← 上一步</button>
                 <button style={btn(true)} onClick={() => setStep(4)}>下一步 →</button>
               </div>
@@ -246,23 +246,23 @@ export default function GeneratePage() {
 
           {/* Step 4: Style reference image */}
           {step === 4 && (
-            <div style={{ ...card, padding: 24 }}>
-              <h3 style={{ margin: '0 0 8px', fontSize: 16, fontWeight: 700 }}>生成风格 / 参考背景图片</h3>
-              <p style={{ color: 'var(--muted)', fontSize: 13, marginBottom: 20 }}>可选。上传参考图或用文字描述风格，AI 将参考其整体配色和氛围</p>
-              <div style={{ border: '2px dashed var(--border)', borderRadius: 10, padding: '20px', textAlign: 'center', cursor: 'pointer' }}
+            <div style={card}>
+              <h3 style={{ margin: '0 0 8px', fontSize: 14, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text)' }}>参考图片</h3>
+              <p style={{ color: 'var(--text)', fontSize: 11, marginBottom: 20, opacity: 0.7 }}>上传参考图或描述风格</p>
+              <div style={{ border: '3px dashed var(--border)', padding: '24px', textAlign: 'center', cursor: 'pointer', background: styleFile ? 'var(--accent2)' : 'transparent' }}
                 onClick={() => styleRef.current?.click()}>
                 {styleFile ? (
-                  <div style={{ fontSize: 14 }}>✓ {styleFile.name}
-                    <button onClick={e => { e.stopPropagation(); setStyleFile(null); }} style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer' }}>×</button>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--border)' }}>✓ {styleFile.name}
+                    <button onClick={e => { e.stopPropagation(); setStyleFile(null); }} style={{ background: 'none', border: 'none', color: 'var(--border)', cursor: 'pointer', fontSize: 16 }}>×</button>
                   </div>
                 ) : (
-                  <div style={{ color: 'var(--muted)', fontSize: 14 }}>点击上传参考图片（可选）</div>
+                  <div style={{ color: 'var(--text)', fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 700 }}>点击上传参考图</div>
                 )}
                 <input ref={styleRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => setStyleFile(e.target.files?.[0] || null)} />
               </div>
               <textarea value={stylePrompt} onChange={e => setStylePrompt(e.target.value)} rows={3}
-                placeholder="风格描述（可选）：例如 赛博朋克风格，深蓝色调，霓虹灯光效果..."
-                style={{ width: '100%', marginTop: 12, padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface2)', color: 'var(--text)', fontSize: 13, resize: 'vertical' }} />
+                placeholder="风格描述..."
+                style={{ width: '100%', marginTop: 16, padding: '14px', border: '3px solid var(--border)', background: 'var(--surface2)', color: 'var(--text)', fontSize: 13, resize: 'vertical', fontFamily: 'inherit' }} />
               <div style={{ marginTop: 24, display: 'flex', justifyContent: 'space-between' }}>
                 <button style={btn()} onClick={() => setStep(3)}>← 上一步</button>
                 <button style={btn(true)} onClick={startGenerate} disabled={generating}>
@@ -275,49 +275,49 @@ export default function GeneratePage() {
           {/* Step 5: Results */}
           {step === 5 && currentProject && (
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-                <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>{currentProject.title || '生成结果'}</h3>
-                <span style={{ fontSize: 12, padding: '3px 10px', borderRadius: 20,
-                  background: currentProject.status === 'done' ? '#16a34a20' : '#f9731620',
-                  color: currentProject.status === 'done' ? '#16a34a' : '#f97316' }}>
-                  {currentProject.status === 'done' ? '完成' : '处理中...'}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
+                <h3 style={{ margin: 0, fontFamily: 'var(--font-syne), sans-serif', fontSize: 24, fontWeight: 800, color: 'var(--text-inv)' }}>{currentProject.title || '生成结果'}</h3>
+                <span style={{ fontSize: 10, padding: '6px 14px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px',
+                  background: currentProject.status === 'done' ? 'var(--accent2)' : 'var(--accent)',
+                  color: 'var(--border)', border: '3px solid var(--border)' }}>
+                  {currentProject.status === 'done' ? '完成' : '处理中'}
                 </span>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
                 {currentProject.covers?.map(cover => (
-                  <div key={cover.id} style={{ ...card, overflow: 'hidden' }}>
+                  <div key={cover.id} style={{ ...card, padding: 0, overflow: 'hidden' }}>
                     <div style={{ aspectRatio: '16/9', background: '#000', position: 'relative' }}>
                       {cover.status === 'done' && cover.image_path
                         ? <img src={cover.image_path} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         : cover.status === 'error'
-                        ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#ef4444', fontSize: 13, padding: 16, textAlign: 'center' }}>
+                        ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#ff3366', fontSize: 12, padding: 16, textAlign: 'center', fontWeight: 700 }}>
                             ✗ {cover.error?.slice(0, 100)}
                           </div>
-                        : <div style={{ padding: '14px', height: '100%', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                        : <div style={{ padding: '16px', height: '100%', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8 }}>
                             {cover.log ? (() => {
                               const logs = JSON.parse(cover.log) as string[];
                               return logs.map((entry, i) => (
-                                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 12 }}>
-                                  <span style={{ flexShrink: 0, fontSize: 10, marginTop: 2, color: i === logs.length - 1 ? 'var(--accent)' : '#16a34a' }}>
+                                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 11 }}>
+                                  <span style={{ flexShrink: 0, fontSize: 10, marginTop: 2, color: i === logs.length - 1 ? 'var(--accent)' : 'var(--accent2)' }}>
                                     {i === logs.length - 1 ? '⟳' : '✓'}
                                   </span>
-                                  <span style={{ color: i === logs.length - 1 ? 'var(--text)' : 'var(--muted)', lineHeight: 1.5 }}>{entry}</span>
+                                  <span style={{ color: 'var(--text-inv)', lineHeight: 1.5, opacity: i === logs.length - 1 ? 1 : 0.7 }}>{entry}</span>
                                 </div>
                               ));
                             })() : (
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--muted)' }}>
-                                <span>⟳</span><span>排队等待中...</span>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 11, color: 'var(--text-inv)' }}>
+                                <span>⟳</span><span>排队中...</span>
                               </div>
                             )}
                           </div>}
                     </div>
-                    <div style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--surface2)' }}>
                       <div>
-                        <div style={{ fontSize: 14, fontWeight: 500 }}>{cover.template_name}</div>
-                        <div style={{ fontSize: 11, color: 'var(--muted)' }}>{cover.template_name}</div>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text)', textTransform: 'uppercase' }}>{cover.template_name}</div>
+                        <div style={{ fontSize: 10, color: 'var(--text)', opacity: 0.6 }}>{cover.platform}</div>
                       </div>
                       {cover.status === 'done' && cover.image_path && (
-                        <a href={cover.image_path} download style={{ ...btn(true), padding: '6px 12px', fontSize: 12, textDecoration: 'none' }}>下载</a>
+                        <a href={cover.image_path} download style={{ ...btn(true), padding: '8px 16px', fontSize: 10, textDecoration: 'none' }}>下载</a>
                       )}
                     </div>
                   </div>
@@ -328,22 +328,22 @@ export default function GeneratePage() {
         </div>
 
         {/* History sidebar */}
-        <div style={{ ...card, padding: 16, height: 'fit-content' }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--muted)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.05em' }}>历史项目</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div style={{ ...card, height: 'fit-content' }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text)', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '1px' }}>历史项目</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {projects.map(p => (
-              <div key={p.id} style={{ padding: '10px 12px', borderRadius: 8, background: currentProject?.id === p.id ? 'var(--surface2)' : 'transparent',
-                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+              <div key={p.id} style={{ padding: '12px', background: currentProject?.id === p.id ? 'var(--accent)' : 'var(--surface2)',
+                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '3px solid var(--border)' }}
                 onClick={() => loadProject(p.id)}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.title || '无标题'}</div>
-                  <div style={{ fontSize: 11, color: 'var(--muted)' }}>{(p as Record<string, unknown>).cover_count as number} 封面</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textTransform: 'uppercase', color: currentProject?.id === p.id ? 'var(--text-inv)' : 'var(--text)' }}>{p.title || '无标题'}</div>
+                  <div style={{ fontSize: 10, color: currentProject?.id === p.id ? 'var(--text-inv)' : 'var(--text)', opacity: 0.7, marginTop: 4 }}>{(p as Record<string, unknown>).cover_count as number} 封面</div>
                 </div>
                 <button onClick={e => { e.stopPropagation(); delProject(p.id); }}
-                  style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', fontSize: 16, flexShrink: 0 }}>×</button>
+                  style={{ background: 'none', border: 'none', color: currentProject?.id === p.id ? 'var(--text-inv)' : 'var(--text)', cursor: 'pointer', fontSize: 18, flexShrink: 0 }}>×</button>
               </div>
             ))}
-            {projects.length === 0 && <div style={{ color: 'var(--muted)', fontSize: 13, textAlign: 'center', padding: '20px 0' }}>暂无历史</div>}
+            {projects.length === 0 && <div style={{ color: 'var(--text)', fontSize: 11, textAlign: 'center', padding: '24px 0', textTransform: 'uppercase', letterSpacing: '0.5px', opacity: 0.6 }}>暂无历史</div>}
           </div>
         </div>
       </div>

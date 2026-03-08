@@ -1,23 +1,37 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #080808;
-  --surface: #111111;
-  --surface2: #1a1a1a;
-  --border: #222222;
-  --accent: #f97316;
-  --text: #ffffff;
-  --muted: #71717a;
+  --bg: #0a0a0a;
+  --surface: #fafafa;
+  --surface2: #f0f0f0;
+  --border: #000000;
+  --accent: #ff3366;
+  --accent2: #00ff88;
+  --text: #000000;
+  --text-inv: #ffffff;
+  --shadow: rgba(0,0,0,0.15);
 }
 
 body {
   background: var(--bg);
-  color: var(--text);
-  font-family: system-ui, -apple-system, sans-serif;
+  color: var(--text-inv);
+  font-family: var(--font-space-mono), monospace;
+  margin: 0;
+  overflow-x: hidden;
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--surface); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent); }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
